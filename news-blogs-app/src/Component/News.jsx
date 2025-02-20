@@ -14,6 +14,7 @@ const News = () => {
     const [selectedCategory, setSelectedCategory] = useState('General');
     const [loading, setLoading] = useState(false);
 
+
     useEffect(() => {
         const fetchNews = async () => {
             setLoading(true);
@@ -66,6 +67,7 @@ const News = () => {
                         <input type="text" placeholder="Search News..." />
                         <button type="submit">
                             <i className="fa-solid fa-magnifying-glass"></i>
+
                         </button>
                     </form>
                 </div>
