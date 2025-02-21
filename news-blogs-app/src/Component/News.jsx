@@ -24,6 +24,9 @@ const News = () => {
     const [showModal, setShowModal] = useState(false);
     const [selectedArticle, setSelectedArticle] = useState(null);
     
+    {/*store the bookmarks in the state*/}
+    const [bookMarks, setBookMarks] = useState([]);
+    const [showBookMarksModal, setShowBookMarksModal] = useState(false);
 
     useEffect(() => {
         const fetchNews = async () => {
@@ -32,7 +35,7 @@ const News = () => {
                 let url = `https://gnews.io/api/v4/top-headlines?category=${selectedCategory.toLowerCase()}&lang=en&apikey=6a807c44233016a8c723cd4198d97ee0`;
 
                 if (searchQuery) {
-                    url = `https://gnews.io/api/v4/search?q=${searchQuery}&lang=en&apikey=6a807c44233016a8c723cd4198d97ee0`
+                    url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(searchQuery)}&lang=en&apikey=6a807c44233016a8c723cd4198d97ee0`;
                 }
                 const response = await axios.get(url);
                 const fetchedNews = response.data.articles;
@@ -83,6 +86,17 @@ const News = () => {
         console.log('Article clicked:', article);
     }
 
+    const handleBookMarkClick = (article) => {
+        setBookMarks((prevBookMarks) => {
+            const isBookmarked = prevBookMarks.some(bookmark => bookmark.title === article.title);
+            if (isBookmarked) {
+                return prevBookMarks.filter(bookmark => bookmark.title !== article.title);
+            } else {
+                return [...prevBookMarks, article];
+            }
+        });
+    };
+
 
     return (
         <div className='news'>
@@ -116,8 +130,8 @@ const News = () => {
                                 </a>
                             ))}
 
-                            <a href="#" className='nav-link'>
-                                Bookmarks <i className="fa-regular fa-bookmark"></i>
+                            <a href="#" className='nav-link' onClick={() => setShowBookMarksModal(true)}>
+                                Bookmarks <i className="fa-solid fa-bookmark"></i>
                             </a>
                         </div>
                     </div>
@@ -129,7 +143,12 @@ const News = () => {
                             <img src={headline.image || noImg} alt={headline.title} />
                             <h2 className="headline-title">
                                 {headline.title}
-                                <i className="fa-regular fa-bookmark bookmark"></i>
+                                <i className={`${bookMarks.some(bookmark => bookmark.title === headline.title) ? "fa-solid" : "fa-regular"} fa-bookmark bookmark`}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleBookMarkClick(article);
+                                }}
+                                ></i>
                             </h2>
                         </div> 
                     )}
@@ -140,15 +159,29 @@ const News = () => {
                                 <img src={article.image || noImg} alt={article.title} />
                                 <h3>
                                     {article.title}
-                                    <i className="fa-regular fa-bookmark bookmark"></i>
+                                    <i className={`${bookMarks.some(bookmark => bookmark.title === article.title) ? "fa-solid" : "fa-regular"} fa-bookmark bookmark`}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleBookMarkClick(article);
+                                }}
+                                ></i>
                                 </h3>
                             </div>
                         ))}
                     </div>
                 </div>
-                <NewsModal show={showModal} article={selectedArticle} onClose={() => setShowModal(false)} />
-                <BookMarks />
-                <div className="my-blogs">My Blogs</div>
+                <NewsModal show={showModal} 
+                article={selectedArticle} 
+                onClose={() => setShowModal(false)} />
+
+                <BookMarks show={showBookMarksModal} 
+                bookMarks={bookMarks} 
+                onClose={() => setShowBookMarksModal(false)} 
+                onSelectedArticle={handleArticleClick} 
+                onDeleteBookMark={handleBookMarkClick}/>
+                <div className="my-blogs">
+                    My Blogs
+                    </div>
                 <div className="weather-calendar">
                     <Weather />
                     <Calendar />
