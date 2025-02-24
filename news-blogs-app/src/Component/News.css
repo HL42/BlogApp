@@ -237,15 +237,15 @@
 
 
 .my-blogs {
-    width: clamp(20rem, 27cqi, 20%);
+    width: clamp(20rem, 27cqi, 28%);
     height: 100%;
     background-color: #111214;
     border-radius: 1rem;
 }
 
 .weather-calendar {
-    display: flex;
     flex: 1;
+    display: flex;
     flex-direction: column;
     row-gap: 2rem;
 }

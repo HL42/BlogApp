@@ -56,6 +56,11 @@ const News = () => {
     
                 setHeadline(fetchedNews[0]);
                 setNews(fetchedNews.slice(1, 7));
+
+                const savedBookMarks = JSON.parse(localStorage.getItem('bookMarks')) || []
+
+                setBookMarks(savedBookMarks);
+
             } catch (error) {
                 console.error('Error fetching news:', error);
             } finally {
@@ -88,12 +93,12 @@ const News = () => {
 
     const handleBookMarkClick = (article) => {
         setBookMarks((prevBookMarks) => {
-            const isBookmarked = prevBookMarks.some(bookmark => bookmark.title === article.title);
-            if (isBookmarked) {
-                return prevBookMarks.filter(bookmark => bookmark.title !== article.title);
-            } else {
-                return [...prevBookMarks, article];
-            }
+            const updatedBookMarks = prevBookMarks.find((bookmark) => bookmark.title === article.title)
+            ? prevBookMarks.filter((bookmark) => bookmark.title !== article.title) 
+            : [...prevBookMarks, article];
+
+            localStorage.setItem('bookMarks', JSON.stringify(updatedBookMarks));
+            return updatedBookMarks;
         });
     };
 
@@ -179,9 +184,7 @@ const News = () => {
                 onClose={() => setShowBookMarksModal(false)} 
                 onSelectedArticle={handleArticleClick} 
                 onDeleteBookMark={handleBookMarkClick}/>
-                <div className="my-blogs">
-                    My Blogs
-                    </div>
+                <div className="my-blogs">My Blogs</div>
                 <div className="weather-calendar">
                     <Weather />
                     <Calendar />
