@@ -253,4 +253,19 @@
     width: 100%;
     min-height: #111214;
     border-radius: 0 0 1rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4rem;
+}
+
+.news-footer p {
+    font-size: 1.4rem;
+    font-weight: 300;
+    color: #bbb;
+}
+
+.news-footer p span {
+    font-family: 'bebas neue', sans-serif;
+    font-size: 2rem;
 }
