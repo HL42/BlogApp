@@ -21,7 +21,7 @@ html {
   place-items: center;
 }
 
-.news-blog-app{
+.news-blogs-app{
   width: 95vw;
   height: 95vmin;  /*选用最小的边作为高度*/
   background-color: #060709;
