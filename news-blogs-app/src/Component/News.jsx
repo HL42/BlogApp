@@ -144,7 +144,7 @@ const News = ({ onShowBlogs, blogs, onEditBlog, onDeleteBlog }) => {
   return (
     <div className="news">
       <header className="news-header">
-        <h1>新闻+博客</h1>
+        <h1 className="logo">新闻+博客</h1>
         <div className="search-bar">
           <form onSubmit={handleSearch}>
             <input

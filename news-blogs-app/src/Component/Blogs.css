@@ -169,7 +169,7 @@
   background: linear-gradient(to left, #b88efc, #6877f4);
   border: none;
   border-radius: 5rem;
-  font-size: 2.5rem;
+  font-size: clamp(1.4rem, 1.5cqi, 2.5rem);
   font-weight: bold;
   text-transform: uppercase;
   color: #fff;
@@ -197,4 +197,68 @@
 
 .post-btn:active {
   transform: translateY(0.2rem);
+}
+
+@media (max-width: 900px) {
+  .blogs-left {
+    background: none;
+    width: 100%;
+  }
+
+  .blogs-left img {
+    top: 10%;
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .blogs-right {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+  }
+
+  .blogs-close-btn {
+    top: 10rem;
+    right: 4rem;
+  }
+
+  .blogs-right-form {
+    margin-top: 18rem;
+  }
+
+  .title-input,
+  .text-input {
+    width: 40rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .blogs-left img {
+    width: 10rem;
+  }
+
+  .title-input,
+  .text-input {
+    width: 30rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .blogs-left img {
+    top: 10%;
+  }
+
+  .blogs-close-btn {
+    top: 6rem;
+    right: 3rem;
+  }
+
+  .text-input {
+    aspect-ratio: 5 / 2;
+  }
+
+  blogs-right-form.visible {
+    row-gap: 2rem;
+  }
 }
