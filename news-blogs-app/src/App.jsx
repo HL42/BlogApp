@@ -1,32 +1,56 @@
+/**
+ * 主应用组件
+ * 负责管理新闻和博客的显示切换，以及博客数据的增删改查
+ */
 import React, { useEffect } from "react";
 import News from "./Component/News";
 import Blogs from "./Component/Blogs";
 
 const App = () => {
+  // 控制是否显示新闻页面
   const [showNews, setShowNews] = React.useState(true);
+  // 控制是否显示博客页面
   const [showBlogs, setShowBlogs] = React.useState(false);
+  // 存储所有博客文章
   const [blogs, setBlogs] = React.useState([]);
+  // 当前选中的博客文章（用于编辑）
   const [selectedPost, setSelectedPost] = React.useState(null);
-  const [isediting, setIsEditing] = React.useState(false);
+  // 是否处于编辑模式
+  const [isEditing, setIsEditing] = React.useState(false);
 
+  /**
+   * 组件挂载时从本地存储加载博客数据
+   */
   useEffect(() => {
     const saveBlogs = JSON.parse(localStorage.getItem("blogs")) || [];
     setBlogs(saveBlogs);
   }, []);
 
+  /**
+   * 处理创建或更新博客
+   * @param {Object} newBlog - 新的博客对象
+   * @param {boolean} isEdit - 是否为编辑模式
+   */
   const handleCreateBlog = (newBlog, isEdit) => {
     setBlogs((prevBlogs) => {
+      // 如果是编辑模式，更新现有博客；否则添加新博客
       const updatedBlogs = isEdit
         ? prevBlogs.map((blog) => (blog === selectedPost ? newBlog : blog))
         : [...prevBlogs, newBlog];
+      // 将更新后的博客保存到本地存储
       localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
 
       return updatedBlogs;
     });
+    // 重置编辑状态
     setIsEditing(false);
     setSelectedPost(null);
   };
 
+  /**
+   * 处理编辑博客
+   * @param {Object} blog - 要编辑的博客对象
+   */
   const handleEditBlog = (blog) => {
     setSelectedPost(blog);
     setIsEditing(true);
@@ -34,19 +58,31 @@ const App = () => {
     setShowBlogs(true);
   };
 
-  const handlDeleteBlog = (blogToDelete) => {
+  /**
+   * 处理删除博客
+   * @param {Object} blogToDelete - 要删除的博客对象
+   */
+  const handleDeleteBlog = (blogToDelete) => {
     setBlogs((prevBlogs) => {
+      // 过滤掉要删除的博客
       const updatedBlogs = prevBlogs.filter((blog) => blog !== blogToDelete);
+      // 更新本地存储
       localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
       return updatedBlogs;
     });
   };
 
+  /**
+   * 切换到博客页面
+   */
   const handleShowBlogs = () => {
     setShowNews(false);
     setShowBlogs(true);
   };
 
+  /**
+   * 切换到新闻页面
+   */
   const handleShowNews = () => {
     setShowNews(true);
     setShowBlogs(false);
@@ -57,12 +93,13 @@ const App = () => {
   return (
     <div className="container">
       <div className="news-blogs-app">
+        {/* 根据状态显示新闻或博客页面 */}
         {showNews && (
           <News
             onShowBlogs={handleShowBlogs}
             blogs={blogs}
             onEditBlog={handleEditBlog}
-            onDeleteBlog={handlDeleteBlog}
+            onDeleteBlog={handleDeleteBlog}
           />
         )}
         {showBlogs && (
@@ -70,7 +107,7 @@ const App = () => {
             onBack={handleShowNews}
             onCreateBlog={handleCreateBlog}
             editPost={selectedPost}
-            isEditing={isediting}
+            isEditing={isEditing}
           />
         )}
       </div>
