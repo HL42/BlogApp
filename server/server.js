@@ -74,9 +74,48 @@ app.get("/api/blogs", async (req, res) => {
     }
 })
 
+app.delete("/api/blogs/:id", async (req, res) => { 
+
+    try {
+
+        const blogId = req.params.id;
+        const deleteBlog = await Blog.findByIdAndDelete(blogId);
+
+        if (!deleteBlog) {
+            return res.status(404).json({ message: "Blog post not found" });
+        }
+
+        res.status(200).json({ message: "Blog post deleted successfully" });
+    }
+    catch (error) {
+
+        console.error('Error deleting blog post:', error);
+        res.status(500).json({ message: "Internal server error", error: error });
+    }
+})
+
+app.put("/api/blogs/:id", async (req, res) => {
+
+    try {
+        const blogId = req.params.id;
+        const { title, content, image } = req.body;
+        const updatedBlog = await Blog.findByIdAndUpdate(
+            blogId,
+            { title, content, image },
+            { new: true } // 返回更新后的文档
+        )
+
+        if(!updatedBlog) {
+            return res.status(404).json({ message: "Blog post not found" });
+        }
+    } catch (error) {
+        console.error('Error updating blog post:', error);
+        res.status(500).json({ message: "Internal server error", error: error });
+    }
+
+})
 
 // 连接到MongoDB数据库 / 实用async/await的格式
-
 const startServer = async () => {
 
     try {

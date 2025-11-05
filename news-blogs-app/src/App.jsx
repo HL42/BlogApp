@@ -44,6 +44,7 @@ const App = () => {
    * @param {Object} newBlog - 新的博客对象
    * @param {boolean} isEdit - 是否为编辑模式
    */
+
   // const handleCreateBlog = (newBlog, isEdit) => {
   //   setBlogs((prevBlogs) => {
   //     // 如果是编辑模式，更新现有博客；否则添加新博客
@@ -81,11 +82,26 @@ const App = () => {
    */
   const handleDeleteBlog = (blogToDelete) => {
 
-    setBlogs((prevBlogs) => {
-      // 过滤掉要删除的博客
-      // Instead of using localstorage we use axios.delete request
-      return prevBlogs.filter((blog) => blog._id != blogToDelete._id)
-    });
+    const blogId = blogToDelete._id;
+
+    try {
+      // 发送删除请求到服务器
+      axios.delete(`http://localhost:5001/api/blogs/${blogId}`)
+
+      setBlogs((prevBlogs) => {
+        // 过滤掉要删除的博客
+        // Instead of using localstorage we use axios.delete request
+        return prevBlogs.filter((blog) => blog._id != blogId)
+      });
+
+      console.log("Blog deleted successfully");
+
+    } catch (error) {
+
+      console.error("Error deleting blog:", error);
+    }
+
+
   };
 
   /**
