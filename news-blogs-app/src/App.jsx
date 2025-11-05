@@ -3,6 +3,7 @@
  * 负责管理新闻和博客的显示切换，以及博客数据的增删改查
  */
 import React, { useEffect } from "react";
+import axios from "axios"
 import News from "./Component/News";
 import Blogs from "./Component/Blogs";
 
@@ -18,12 +19,24 @@ const App = () => {
   // 是否处于编辑模式
   const [isEditing, setIsEditing] = React.useState(false);
 
+
+  const fetchBlogs = async () => {
+
+    try {
+      console.log("Fetching blogs from server...");
+      const response = await axios.get("http://localhost:5001/api/blogs");
+      setBlogs(response.data);
+
+    }
+    catch (error) {
+      console.error("Error fetching blogs:", error);
+    }
+  }
   /**
    * 组件挂载时从本地存储加载博客数据
    */
   useEffect(() => {
-    const saveBlogs = JSON.parse(localStorage.getItem("blogs")) || [];
-    setBlogs(saveBlogs);
+    fetchBlogs(); // 调用fetchblog而不是从localstorage中读取
   }, []);
 
   /**
@@ -31,18 +44,22 @@ const App = () => {
    * @param {Object} newBlog - 新的博客对象
    * @param {boolean} isEdit - 是否为编辑模式
    */
-  const handleCreateBlog = (newBlog, isEdit) => {
-    setBlogs((prevBlogs) => {
-      // 如果是编辑模式，更新现有博客；否则添加新博客
-      const updatedBlogs = isEdit
-        ? prevBlogs.map((blog) => (blog === selectedPost ? newBlog : blog))
-        : [...prevBlogs, newBlog];
-      // 将更新后的博客保存到本地存储
-      localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
+  // const handleCreateBlog = (newBlog, isEdit) => {
+  //   setBlogs((prevBlogs) => {
+  //     // 如果是编辑模式，更新现有博客；否则添加新博客
+  //     const updatedBlogs = isEdit
+  //       ? prevBlogs.map((blog) => (blog === selectedPost ? newBlog : blog))
+  //       : [...prevBlogs, newBlog];
+  //     // 将更新后的博客保存到本地存储
+  //     localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
 
-      return updatedBlogs;
-    });
-    // 重置编辑状态
+  //     return updatedBlogs;
+  //   });
+
+  const handleBackToNews = async () => {
+    await fetchBlogs();
+    setShowNews(true);
+    setShowBlogs(false);
     setIsEditing(false);
     setSelectedPost(null);
   };
@@ -63,12 +80,11 @@ const App = () => {
    * @param {Object} blogToDelete - 要删除的博客对象
    */
   const handleDeleteBlog = (blogToDelete) => {
+
     setBlogs((prevBlogs) => {
       // 过滤掉要删除的博客
-      const updatedBlogs = prevBlogs.filter((blog) => blog !== blogToDelete);
-      // 更新本地存储
-      localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
-      return updatedBlogs;
+      // Instead of using localstorage we use axios.delete request
+      return prevBlogs.filter((blog) => blog._id != blogToDelete._id)
     });
   };
 
@@ -104,8 +120,7 @@ const App = () => {
         )}
         {showBlogs && (
           <Blogs
-            onBack={handleShowNews}
-            onCreateBlog={handleCreateBlog}
+            onBack={handleBackToNews}
             editPost={selectedPost}
             isEditing={isEditing}
           />

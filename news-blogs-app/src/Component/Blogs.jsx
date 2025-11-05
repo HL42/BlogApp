@@ -6,6 +6,7 @@ import React, { useEffect } from "react";
 import Userimg from "../assets/images/user.jpg";
 import Noimg from "../assets/images/no-img.png";
 import "./Blogs.css";
+import axios from "axios";
 
 /**
  * Blogs组件
@@ -14,7 +15,7 @@ import "./Blogs.css";
  * @param {Object} editPost - 要编辑的博客文章（编辑模式下）
  * @param {boolean} isEditing - 是否为编辑模式
  */
-export const Blogs = ({ onBack, onCreateBlog, editPost, isEditing }) => {
+export const Blogs = ({ onBack, editPost, isEditing }) => {
   // 控制表单显示状态
   const [showForm, setShowForm] = React.useState(false);
   // 博客图片（Base64格式）
@@ -97,7 +98,39 @@ export const Blogs = ({ onBack, onCreateBlog, editPost, isEditing }) => {
    * 处理表单提交
    * @param {Event} e - 表单提交事件
    */
-  const handleSubmit = (e) => {
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+
+  //   // 验证标题和内容是否填写
+  //   if (!title || !content) {
+  //     if (!title) setTitleValid(false);
+  //     if (!content) setContentValid(false);
+  //     return;
+  //   }
+
+  //   // 创建博客对象
+  //   const newBlog = {
+  //     image: image || Noimg,
+  //     title,
+  //     content,
+  //   };
+
+  //   // 调用回调函数创建或更新博客
+  //   onCreateBlog(newBlog, isEditing);
+  //   // 清空表单
+  //   setImage(null);
+  //   setTitle("");
+  //   setContent("");
+  //   setShowForm(false);
+  //   setSubmitted(true);
+  //   // 3秒后返回上一页
+  //   setTimeout(() => {
+  //     setSubmitted(false);
+  //     onBack();
+  //   }, 3000);
+  // };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // 验证标题和内容是否填写
@@ -107,27 +140,35 @@ export const Blogs = ({ onBack, onCreateBlog, editPost, isEditing }) => {
       return;
     }
 
-    // 创建博客对象
     const newBlog = {
       image: image || Noimg,
-      title,
-      content,
-    };
+      title: title,
+      content: content,
+    }
 
-    // 调用回调函数创建或更新博客
-    onCreateBlog(newBlog, isEditing);
-    // 清空表单
-    setImage(null);
-    setTitle("");
-    setContent("");
-    setShowForm(false);
-    setSubmitted(true);
-    // 3秒后返回上一页
-    setTimeout(() => {
-      setSubmitted(false);
-      onBack();
-    }, 3000);
-  };
+    try {
+
+      const response = await axios.post("http://localhost:5001/api/blogs", newBlog);
+
+      console.log("Blog post created:", response.data);
+
+      setImage(null);
+      setTitle("");
+      setContent("");
+      setShowForm(false);
+      setSubmitted(true);
+
+      // 3秒后返回上一页
+      setTimeout(() => {
+        setSubmitted(false);
+        onBack();
+      }, 3000);
+    }
+    catch (error) {
+
+      console.error("Error creating blog post:", error);
+    }
+  }
 
   return (
     <div className="blogs">
