@@ -80,18 +80,19 @@ const App = () => {
    * 处理删除博客
    * @param {Object} blogToDelete - 要删除的博客对象
    */
-  const handleDeleteBlog = (blogToDelete) => {
+  const handleDeleteBlog = async (blogToDelete) => {
 
     const blogId = blogToDelete._id;
 
     try {
       // 发送删除请求到服务器
-      axios.delete(`http://localhost:5001/api/blogs/${blogId}`)
+      await axios.delete(`http://localhost:5001/api/blogs/${blogId}`);
 
       setBlogs((prevBlogs) => {
         // 过滤掉要删除的博客
         // Instead of using localstorage we use axios.delete request
         return prevBlogs.filter((blog) => blog._id != blogId)
+        console.log("Blog deleted from state");
       });
 
       console.log("Blog deleted successfully");

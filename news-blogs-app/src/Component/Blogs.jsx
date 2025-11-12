@@ -147,10 +147,18 @@ export const Blogs = ({ onBack, editPost, isEditing }) => {
     }
 
     try {
+      
+      if (isEditing) {
+        const blogId = editPost._id;
 
-      const response = await axios.post("http://localhost:5001/api/blogs", newBlog);
+        const response = await axios.put(`http://localhost:5001/api/blogs/${blogId}`, newBlog);
+        console.log("Blog post updated:", response.data);
+        
+      } else {
 
-      console.log("Blog post created:", response.data);
+        const response = await axios.post("http://localhost:5001/api/blogs", newBlog);
+        console.log("Blog post created:", response.data);
+      }
 
       setImage(null);
       setTitle("");
@@ -158,17 +166,16 @@ export const Blogs = ({ onBack, editPost, isEditing }) => {
       setShowForm(false);
       setSubmitted(true);
 
-      // 3秒后返回上一页
       setTimeout(() => {
+        
         setSubmitted(false);
         onBack();
       }, 3000);
-    }
-    catch (error) {
-
-      console.error("Error creating blog post:", error);
-    }
+    
+  } catch (error) {
+    console.error("Error submitting blog post:", error);
   }
+}
 
   return (
     <div className="blogs">
