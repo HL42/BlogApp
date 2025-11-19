@@ -11,10 +11,6 @@ import noImg from "../assets/images/no-img.png";
 import axios from "axios";
 import NewsModal from "./NewsModal";
 import BookMarks from "./BookMarks";
-import blogImage1 from "../assets/images/blog1.jpg";
-import blogImage2 from "../assets/images/blog2.jpg";
-import blogImage3 from "../assets/images/blog3.jpg";
-import blogImage4 from "../assets/images/blog4.jpg";
 import BlogsModal from "./BlogsModal";
 
 // 新闻分类列表
@@ -66,6 +62,18 @@ const News = ({ onShowBlogs, blogs, onEditBlog, onDeleteBlog }) => {
   const [selectedPost, setSelectedPost] = useState(null);
   // 控制博客详情模态框的显示
   const [showBlogsModal, setShowBlogsModal] = useState(false);
+  
+  // --- 新增函数：获取书签 (READ) ---
+  const fetchBookmarks = async () => {
+    try {
+        const response = await axios.get("http://localhost:5001/api/bookmarks");
+        setBookMarks(response.data);
+    } catch (error) {
+        console.error("Error fetching bookmarks:", error);
+    }
+  };
+
+
   /**
    * 获取新闻数据
    * 当分类或搜索关键词改变时重新获取新闻
@@ -84,14 +92,10 @@ const News = ({ onShowBlogs, blogs, onEditBlog, onDeleteBlog }) => {
           )}&lang=en&apikey=6a807c44233016a8c723cd4198d97ee0`;
         }
         const response = await axios.get(url);
-        const fetchedNews = response.data.articles;
+        let fetchedNews = response.data.articles;
 
         // 如果没有获取到新闻，清空显示
         if (!fetchedNews || fetchedNews.length === 0) {
-          console.warn(
-            "No news articles found for category:",
-            selectedCategory
-          );
           setHeadline(null);
           setNews([]);
           setLoading(false);
@@ -99,23 +103,21 @@ const News = ({ onShowBlogs, blogs, onEditBlog, onDeleteBlog }) => {
         }
 
         // 为没有图片的文章设置默认图片
-        fetchedNews.forEach((article) => {
-          if (!article.image) {
-            article.image = noImg;
-          }
-        });
+        fetchedNews = fetchedNews.map((article) => ({
+            ...article,
+            image: article.image || noImg,
+        }));
+
 
         // 设置头条新闻和新闻列表（头条外的6条）
         setHeadline(fetchedNews[0]);
         setNews(fetchedNews.slice(1, 7));
 
-        // 从本地存储加载书签
-        const savedBookMarks =
-          JSON.parse(localStorage.getItem("bookMarks")) || [];
+        // 2. 从后端加载书签 (新增/修复：替换 Local Storage)
+        await fetchBookmarks();
 
-        setBookMarks(savedBookMarks);
       } catch (error) {
-        console.error("Error fetching news:", error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
@@ -151,27 +153,63 @@ const News = ({ onShowBlogs, blogs, onEditBlog, onDeleteBlog }) => {
   const handleArticleClick = (article) => {
     setSelectedArticle(article);
     setShowModal(true);
-    console.log("Article clicked:", article);
   };
 
   /**
-   * 处理书签点击，添加或移除书签
+   * 处理书签点击，添加或移除书签 (修复了语法和逻辑)
    * @param {Object} article - 要添加/移除的文章
    */
-  const handleBookMarkClick = (article) => {
-    setBookMarks((prevBookMarks) => {
-      // 如果文章已在书签中，则移除；否则添加
-      const updatedBookMarks = prevBookMarks.find(
-        (bookmark) => bookmark.title === article.title
-      )
-        ? prevBookMarks.filter((bookmark) => bookmark.title !== article.title)
-        : [...prevBookMarks, article];
+  const handleBookMarkClick = async (article) => { // <--- 修复了语法错误
+    
+    // 检查是否已在书签中
+    const isBookmarked = bookMarks.some(
+      (bookmark) => bookmark.title === article.title
+    );
 
-      // 保存到本地存储
-      localStorage.setItem("bookMarks", JSON.stringify(updatedBookMarks));
-      return updatedBookMarks;
-    });
+    try {
+        if (isBookmarked) {
+            // --- DELETE 逻辑：如果已收藏，则删除 ---
+            const encodedTitle = encodeURIComponent(article.title);
+            await axios.delete(`http://localhost:5001/api/bookmarks/${encodedTitle}`);
+            console.log("书签删除成功:", article.title);
+
+        } else {
+            // --- POST 逻辑：如果未收藏，则添加 ---
+            const bookmarkData = {
+                title: article.title,
+                url: article.url,
+                image: article.image,
+                // 后端 server.js 期望 source 是一个对象 { name: '...' }，或者这里发送 sourceName 
+                // 我们直接发送 article 结构，但移除不必要的字段，使之兼容
+                source: article.source, 
+                publishedAt: article.publishedAt,
+            };
+            await axios.post("http://localhost:5001/api/bookmarks", bookmarkData);
+            console.log("书签添加成功:", article.title);
+        }
+
+        // 无论添加还是删除成功，都重新从后端获取列表来更新 UI
+        await fetchBookmarks();
+
+    } catch (error) {
+        // 如果后端返回 409 (已存在)，说明是重复点击，我们可以忽略
+        if (error.response && error.response.status === 409) {
+            console.warn("书签已存在 (忽略)");
+        } else {
+            console.error("书签操作失败:", error);
+        }
+    }
   };
+
+  /**
+   * 处理书签模态框里的删除
+   * @param {Object} bookmarkToDelete - 要删除的书签对象
+   */
+  const onDeleteBookMark = async (bookmarkToDelete) => {
+    // 复用 handleBookMarkClick 的删除逻辑
+    await handleBookMarkClick(bookmarkToDelete); 
+  };
+
 
   /**
    * 处理博客点击，显示博客详情模态框
@@ -310,10 +348,10 @@ const News = ({ onShowBlogs, blogs, onEditBlog, onDeleteBlog }) => {
         {/* 书签模态框 */}
         <BookMarks
           show={showBookMarksModal}
-          bookMarks={bookMarks}
+          bookMarks={bookMarks} // 传递 state 而非 localStorage
           onClose={() => setShowBookMarksModal(false)}
           onSelectedArticle={handleArticleClick}
-          onDeleteBookMark={handleBookMarkClick}
+          onDeleteBookMark={onDeleteBookMark} // 使用新的 onDeleteBookMark
         />
         {/* 我的博客区域 */}
         <div className="my-blogs">
@@ -321,7 +359,7 @@ const News = ({ onShowBlogs, blogs, onEditBlog, onDeleteBlog }) => {
           <div className="blog-posts">
             {blogs.map((blog, index) => (
               <div
-                key={index}
+                key={blog._id} // 使用 MongoDB 的 _id 作为 key
                 className="blog-post"
                 onClick={() => handleBlogClick(blog)}
               >
@@ -332,14 +370,17 @@ const News = ({ onShowBlogs, blogs, onEditBlog, onDeleteBlog }) => {
                 <div className="post-buttons">
                   <button
                     className="edit-post"
-                    onClick={() => onEditBlog(blog)}
+                    onClick={(e) => {
+                      e.stopPropagation(); // 阻止冒泡到父级，避免打开博客详情
+                      onEditBlog(blog);
+                    }}
                   >
                     <i className="bx bxs-edit"></i>
                   </button>
                   <button
                     className="delete-post"
                     onClick={(e) => {
-                      e.stopPropagation();
+                      e.stopPropagation(); // 阻止冒泡
                       onDeleteBlog(blog);
                     }}
                   >

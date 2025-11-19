@@ -100,6 +100,88 @@ app.put("/api/blogs/:id", async (req, res) => {
     }
 })
 
+
+// Change bookmark into full stack
+const bookmarkSchema = new mongoose.Schema({
+
+    title: { type: String, requried: true, unique: true },
+    url: { type: String, required: true },
+    image: String,
+    sourceName: String,
+    publishedAt: Date, 
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+})
+
+const Bookmark = mongoose.model("Bookmark", bookmarkSchema);
+
+app.post("/api/bookmarks", async (req, res) => {
+
+    try {
+        const { title, url, image, source } = req.body;
+
+        // double check if the bookmark already exist
+        const existingBookmark = await Bookmark.findOne({ title});
+        
+        if (existingBookmark) {
+            return res.status(409).json({ message: "Bookmark already exists" });
+        }
+
+        const newBookmark = new Bookmark({
+            title,
+            url,
+            image,
+            sourceName: source.name,
+            publishedAt: req.body.publishedAt
+        })
+
+        const savedBookmark = await newBookmark.save();
+        res.status(201).json(savedBookmark);
+
+    } catch (error) {
+
+        console.error("Error creating bookmark:", error);
+        res.status(500).json({ message: "Failed Creating new bookmark", error: error });
+    }
+})
+
+app.get("/api/bookmarks", async (req, res) => {
+    
+    try {
+        // store all bookmarks
+        const allBookmarks = await Bookmark.find().sort({ createdAt: -1});
+        res.status(200).json(allBookmarks);
+
+    } catch (error) {
+        
+        console.error("Error fetching bookmarks:", error);
+        res.status(500).json({ message: "Failed fetching bookmarks", error: error });
+    }
+})
+
+app.delete("/api/bookmarks/:title", async (req, res) => {
+
+    try {
+        // get the title from the params
+        const title = req.params.title;
+
+        const deletedBookmark = await Bookmark.findOneAndDelete({ title: title});
+
+        if (!deletedBookmark) {
+            return res.status(404).json({ message: "Bookmark not found" });
+        }
+
+        res.status(200).json({ message: "Bookmark deleted successfully" });
+
+    } catch (error) {
+
+        console.error("Error deleting bookmark:", error);
+        res.status(500).json({ message: "Failed deleting bookmark", error: error });
+    }
+})
+
 // 连接到MongoDB数据库 / 实用async/await的格式
 const startServer = async () => {
     try {

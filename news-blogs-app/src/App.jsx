@@ -44,19 +44,6 @@ const App = () => {
    * @param {Object} newBlog - 新的博客对象
    * @param {boolean} isEdit - 是否为编辑模式
    */
-
-  // const handleCreateBlog = (newBlog, isEdit) => {
-  //   setBlogs((prevBlogs) => {
-  //     // 如果是编辑模式，更新现有博客；否则添加新博客
-  //     const updatedBlogs = isEdit
-  //       ? prevBlogs.map((blog) => (blog === selectedPost ? newBlog : blog))
-  //       : [...prevBlogs, newBlog];
-  //     // 将更新后的博客保存到本地存储
-  //     localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
-
-  //     return updatedBlogs;
-  //   });
-
   const handleBackToNews = async () => {
     await fetchBlogs();
     setShowNews(true);

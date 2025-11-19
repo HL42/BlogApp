@@ -177,6 +177,15 @@
   cursor: pointer;
 }
 
+.error-message {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+  border: 1px solid red;
+  padding: 10px;
+  border-radius: 5px;
+}
+
 .blogs-close-btn {
   position: absolute;
   top: 3rem;

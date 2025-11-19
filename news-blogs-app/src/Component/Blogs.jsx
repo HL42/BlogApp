@@ -30,6 +30,8 @@ export const Blogs = ({ onBack, editPost, isEditing }) => {
   const [titleValid, setTitleValid] = React.useState(true);
   // 内容验证状态
   const [contentValid, setContentValid] = React.useState(true);
+  // 错误信息状态
+  const [submissionError, setSubmissionError] = React.useState(null);
 
   /**
    * 当编辑模式或编辑文章改变时，更新表单数据
@@ -98,40 +100,12 @@ export const Blogs = ({ onBack, editPost, isEditing }) => {
    * 处理表单提交
    * @param {Event} e - 表单提交事件
    */
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-
-  //   // 验证标题和内容是否填写
-  //   if (!title || !content) {
-  //     if (!title) setTitleValid(false);
-  //     if (!content) setContentValid(false);
-  //     return;
-  //   }
-
-  //   // 创建博客对象
-  //   const newBlog = {
-  //     image: image || Noimg,
-  //     title,
-  //     content,
-  //   };
-
-  //   // 调用回调函数创建或更新博客
-  //   onCreateBlog(newBlog, isEditing);
-  //   // 清空表单
-  //   setImage(null);
-  //   setTitle("");
-  //   setContent("");
-  //   setShowForm(false);
-  //   setSubmitted(true);
-  //   // 3秒后返回上一页
-  //   setTimeout(() => {
-  //     setSubmitted(false);
-  //     onBack();
-  //   }, 3000);
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // 重置错误状态
+    setSubmissionError(null);
 
     // 验证标题和内容是否填写
     if (!title || !content) {
@@ -173,6 +147,23 @@ export const Blogs = ({ onBack, editPost, isEditing }) => {
       }, 3000);
     
   } catch (error) {
+
+    setSubmitted(false)
+    
+    let errorMessage = "Internal server error";
+
+    if (error.response && error.response.data && error.response.data.message) {
+
+      errorMessage = error.response.data.message;
+
+    } else if (error.message) {
+
+        errorMessage = error.message;
+
+    }
+
+    setSubmissionError(errorMessage);
+    
     console.error("Error submitting blog post:", error);
   }
 }
@@ -193,6 +184,8 @@ export const Blogs = ({ onBack, editPost, isEditing }) => {
         )}
         {/* 提交成功提示 */}
         {submitted && <p className="submission-message">Post Submitted!</p>}
+        {/* 提交失败提示 */}
+        {submissionError && <p className="error-message">Error: {submissionError}</p>}
         {/* 博客创建/编辑表单 */}
         <div className={`blogs-right-form ${showForm ? "visible" : "hidden"}`}>
           <h1>{isEditing ? "Edit Post" : "New Post"}</h1>
