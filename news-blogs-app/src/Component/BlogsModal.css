@@ -1,28 +1,80 @@
-.blogs-modal-image {
-  max-width: 100%;
-  height: 60%;
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4); /* 深色遮罩 */
+  backdrop-filter: blur(10px); /* 遮罩模糊 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  background: #fff;
+  width: 90%;
+  max-width: 600px;
+  max-height: 85vh;
+  border-radius: 24px;
+  padding: 40px;
+  position: relative;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 32px;
+  height: 32px;
+  background: #f0f0f0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  color: #555;
+}
+
+.close-button:hover {
+  background: #e0e0e0;
+  color: #000;
+}
+
+.modal-image {
+  width: 100%;
+  height: 300px;
   object-fit: cover;
-  border-radius: 1rem;
-  opacity: 0.5;
+  border-radius: 16px;
+  margin-bottom: 20px;
 }
 
-.blogs-modal-title {
-  font-family: "bebas neue", sans-serif;
-  font-size: 3rem;
-  color: #fff;
-  letter-spacing: 0.1rem;
-  margin-top: 2rem;
+.modal-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  line-height: 1.2;
 }
 
-.blogs-post-content {
-  font-family: "comfortaa", sans-serif;
-  font-size: 1.4rem;
-  color: #bbb;
-  margin-top: 1rem;
-  overflow-y: scroll;
-  max-height: 20rem;
+.modal-content-text {
+  font-size: 17px;
+  line-height: 1.6;
+  color: #444;
 }
 
-.blogs-post-content::-webkit-scrollbar {
-  display: none;
+/* 动画 */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }

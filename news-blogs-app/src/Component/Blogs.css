@@ -1,273 +1,233 @@
+/* 容器 */
 .blogs {
-  width: 100%;
-  height: 100%;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+  max-width: 1000px;
+  margin: 40px auto; /* 上下间距适中 */
   display: flex;
+  overflow: hidden;
+  height: 650px; /* 固定高度，保持稳定 */
+  border: 1px solid #eef0f2;
+  position: relative;
 }
 
+/* 左侧图片 - 占40% */
 .blogs-left {
-  width: 50%;
+  width: 40%;
   height: 100%;
-  background: linear-gradient(
-      rgba(184, 142, 252, 0.3),
-      rgba(104, 119, 244, 0.2)
-    ),
-    url(../assets/images/bg.jpg) center no-repeat;
-  background-size: cover;
-  border-radius: 1rem 0 0 1rem;
-  position: relative;
+  background: #f0f0f0;
 }
 
 .blogs-left img {
-  width: 15%;
-  aspect-ratio: 1;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 0.3rem solid #687784;
-  position: absolute;
-  top: 50%;
-  right: -7.5rem;
-  transform: translateY(-50%);
-}
-
-.blogs-right {
-  width: 50%;
+  width: 100%;
   height: 100%;
-  padding: 2rem;
+  object-fit: cover;
+  display: block;
+}
+
+/* 右侧表单 - 占60% */
+.blogs-right {
+  width: 60%;
+  padding: 40px 50px; /* 调整内边距 */
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  /* 关键修复：改为从顶部开始排列，消除巨大间隙 */
+  justify-content: flex-start; 
   position: relative;
+  background: #fff;
 }
 
-/* Hover effect */
-.post-btn:active {
-  transform: translateY(0.2rem);
+/* 标题样式 */
+.blogs-right h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1d1d1f;
+  margin-bottom: 25px; /* 减小标题下方的间距 */
+  margin-top: 10px;
 }
 
-.submission-message {
-  font-size: 6rem;
-  text-transform: uppercase;
-  background: linear-gradient(to right, #b88efc, #6877f4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.blogs-right-form.visible {
+.blogs-right-form {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  row-gap: 5rem;
+  gap: 15px; /* 表单元素之间的间距 */
+  width: 100%;
 }
 
-.blogs-right-form.hidden {
-  display: none;
-}
-
-.blogs-right-form h1 {
-  font-family: "comfortaa", sans-serif;
-  font-size: clamp(2rem, 5cqi, 6rem);
-  text-transform: uppercase;
-  background: linear-gradient(to right, #b88efc, #6877f4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.blogs-right-form form {
-  display: flex;
-  flex-direction: column;
-  row-gap: 4rem;
+/* 图片上传按钮 */
+.img-upload {
+  margin-bottom: 5px;
 }
 
 .file-upload {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  column-gap: 2rem;
-  font-size: 2rem;
-  color: #bbb;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #f5f5f7;
+  color: #0071e3;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.2s;
+}
+
+.file-upload:hover {
+  background: #e0e0e5;
 }
 
 .file-upload i {
-  font-size: 4rem;
-  color: #b88efc;
+  font-size: 16px;
 }
 
-.blogs-right-form input[type="file"] {
+.img-upload input {
   display: none;
 }
 
-.title-input {
-  font-size: 1.8rem;
-}
-
+/* 输入框样式 - Apple 风格 */
 .title-input,
 .text-input {
-  width: clamp(15rem, 25cqi, 45rem);
-  background: transparent;
-  border: none;
-  border-bottom: 0.1rem, solid #b88efc;
-  padding: 2rem 0;
-  color: #ddd;
-}
-
-.text-input {
-  aspect-ratio: 5 / 3;
-  resize: none;
-}
-
-.text-input::-webkit-scrollbar {
-  display: none;
-}
-
-.title-input.invalid,
-.text-input.invalid {
-  border-bottom: 0.1rem solid #cf1438;
+  width: 100%;
+  border: 2px solid transparent;
+  background: #f5f5f7; /* 浅灰背景 */
+  border-radius: 14px;
+  padding: 14px 18px;
+  font-size: 15px;
+  color: #1d1d1f;
+  outline: none;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  box-sizing: border-box;
 }
 
 .title-input::placeholder,
 .text-input::placeholder {
-  font-family: "comfortaa", sans-serif;
-  font-size: 1.3rem;
-  color: #b88efc;
-  opacity: 0.5;
+  color: #86868b;
 }
 
-.title-input::placeholder {
-  font-size: 1.6rem;
+.title-input:focus,
+.text-input:focus {
+  background: #fff;
+  border-color: #0071e3;
+  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1);
 }
 
-.title-input:focus::placeholder,
-.text-input:focus::placeholder {
-  color: transparent;
+/* 验证失败样式 */
+.title-input.invalid,
+.text-input.invalid {
+  background: #fff2f2;
+  border-color: #ff3b30;
 }
 
-.title-input.invalid::placeholder,
-.text-input.invalid::placeholder {
-  color: #c4143a;
+.text-input {
+  height: 220px; /* 增加内容输入区域高度 */
+  resize: none;
+  line-height: 1.5;
 }
 
+/* 提交按钮 */
 .submit-btn {
-  height: 5rem;
-  background: linear-gradient(to left, #b88efc, #6877f4);
+  background: #0071e3;
+  color: white;
+  padding: 14px;
+  border-radius: 14px;
   border: none;
-  border-radius: 5rem;
-  font-size: 1.8rem;
-  color: #fff;
-  text-transform: uppercase;
-  letter-spacing: 0.1rem;
-  text-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  font-weight: 600;
+  width: 100%;
+  margin-top: 15px;
   cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.submit-btn:hover {
+  background: #0077ed;
+  transform: scale(1.01);
 }
 
 .submit-btn:active {
-  transform: translateY(0.2rem);
+  transform: scale(0.98);
 }
 
-.post-btn {
-  width: clamp(15rem, 16cqi, 30rem);
-  aspect-ratio: 4 / 1;
-  background: linear-gradient(to left, #b88efc, #6877f4);
-  border: none;
-  border-radius: 5rem;
-  font-size: clamp(1.4rem, 1.5cqi, 2.5rem);
-  font-weight: bold;
-  text-transform: uppercase;
-  color: #fff;
-  text-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-}
-
-.error-message {
-  color: red;
-  font-weight: bold;
-  margin-top: 10px;
-  border: 1px solid red;
-  padding: 10px;
-  border-radius: 5px;
-}
-
+/* 返回按钮 */
 .blogs-close-btn {
-  position: absolute;
-  top: 3rem;
-  right: 2.5rem;
   background: transparent;
   border: none;
-  font-family: "bebas neue", sans-serif;
-  font-size: 3rem;
-  color: #ddd;
+  color: #86868b;
+  margin-top: auto; /* 将返回按钮推到底部 */
+  padding-top: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  transition: color 0.2s;
+}
+
+.blogs-close-btn:hover {
+  color: #1d1d1f;
+}
+
+/* --- 提交成功遮罩 --- */
+.submission-message {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(15px);
+  z-index: 100; /* 确保覆盖 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.submission-message p {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1d1d1f;
+  margin-top: 20px;
+}
+
+/* 绿色打钩动画 */
+.submission-message::before {
+  content: '✓';
   display: flex;
   align-items: center;
-  cursor: pointer;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  background: #34c759; /* Apple Green */
+  color: white;
+  font-size: 40px;
+  border-radius: 50%;
+  box-shadow: 0 8px 20px rgba(52, 199, 89, 0.3);
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.blogs-close-btn i {
-  font-size: 4rem;
+/* 错误提示 */
+.error-message {
+  color: #ff3b30;
+  background: #fff2f2;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
-.post-btn:active {
-  transform: translateY(0.2rem);
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-@media (max-width: 900px) {
-  .blogs-left {
-    background: none;
-    width: 100%;
-  }
-
-  .blogs-left img {
-    top: 10%;
-    right: auto;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  .blogs-right {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-  }
-
-  .blogs-close-btn {
-    top: 10rem;
-    right: 4rem;
-  }
-
-  .blogs-right-form {
-    margin-top: 18rem;
-  }
-
-  .title-input,
-  .text-input {
-    width: 40rem;
-  }
-}
-
-@media (max-width: 500px) {
-  .blogs-left img {
-    width: 10rem;
-  }
-
-  .title-input,
-  .text-input {
-    width: 30rem;
-  }
-}
-
-@media (max-width: 400px) {
-  .blogs-left img {
-    top: 10%;
-  }
-
-  .blogs-close-btn {
-    top: 6rem;
-    right: 3rem;
-  }
-
-  .text-input {
-    aspect-ratio: 5 / 2;
-  }
-
-  blogs-right-form.visible {
-    row-gap: 2rem;
-  }
+@keyframes popIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }

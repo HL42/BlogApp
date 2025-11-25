@@ -5,7 +5,7 @@
 import React, { useEffect } from "react";
 import axios from "axios"
 import News from "./Component/News";
-import Blogs from "./Component/Blogs";
+import Blogs from "./Component/blogs";
 
 const App = () => {
   // 控制是否显示新闻页面

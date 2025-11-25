@@ -1,80 +1,80 @@
 .modal-overlay {
     position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.7);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4); /* 深色遮罩 */
+    backdrop-filter: blur(10px); /* 遮罩模糊 */
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
-}
-
-.modal-content {
+    animation: fadeIn 0.3s ease;
+  }
+  
+  .modal-content {
+    background: #fff;
     width: 90%;
-    max-width: 60rem;
-    height: auto;
-    max-height: 100%;
-    background-color: #111214;
-    padding: 4rem;
-    border-radius: 1rem;
-    box-shadow: 0 0 5rem 4rem rgba(0, 0, 0, 0.5);
+    max-width: 600px;
+    max-height: 85vh;
+    border-radius: 24px;
+    padding: 40px;
     position: relative;
-}
-
-.close-button {
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .close-button {
     position: absolute;
-    top: 1rem;
-    right: 2rem;
-    font-size: 2rem;
-    color: white;
+    top: 20px;
+    right: 20px;
+    width: 32px;
+    height: 32px;
+    background: #f0f0f0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-}
-
-.modal-image {
+    transition: background 0.2s;
+    color: #555;
+  }
+  
+  .close-button:hover {
+    background: #e0e0e0;
+    color: #000;
+  }
+  
+  .modal-image {
     width: 100%;
-    height: auto;
-    max-height: 30rem;
+    height: 300px;
     object-fit: cover;
-    border-radius: 1rem;
-    opacity: 0.5;
-}
-
-.modal-title{
-    font-family: "bebas neue", sans-serif;
-    font-size: 2rem;
-    color: #fff;
-    letter-spacing: 0.1rem;
-    margin-top: 2rem;
-}
-
-.modal-source, .modal-date {
-    font-family: "comfortaa", sans-serif;
-    font-size: 1.4rem;
-    color: #bbb;
-    margin-top: 1rem;
-}
-
-.modal-content-text {
-    font-size: 1.6rem;
-    margin-top: 1.7rem;
-    line-height: 2.7rem;
-    color: #ddd;
-
-}
-
-.read-more-link {
-    width: 15rem;
-    display: inline-block;
-    background: linear-gradient(to right, #b88efc, #6877f4);
-    margin-top: 2rem;
-    padding: 1rem 2rem;
-    color: white;
-    border-radius: 5rem;
-    font-size: 1.6rem;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 0.1rem;
-}
-
-.read-more-link:active {
-    transform: translateY(0.1rem);
-}
+    border-radius: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .modal-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    line-height: 1.2;
+  }
+  
+  .modal-content-text {
+    font-size: 17px;
+    line-height: 1.6;
+    color: #444;
+  }
+  
+  /* 动画 */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes slideUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }

@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import Weather from "./Weather";
 import Calendar from "./Calendar";
 import "./News.css";
-import userImg from "../assets/images/user.jpg";
+import userImg from "../assets/images/Kermit.png";
 import noImg from "../assets/images/no-img.png";
 import axios from "axios";
 import NewsModal from "./NewsModal";
@@ -228,150 +228,125 @@ const News = ({ onShowBlogs, blogs, onEditBlog, onDeleteBlog }) => {
     setSelectedPost(null);
   };
 
-  return (
-    <div className="news">
-      {/* 头部：包含logo和搜索栏 */}
-      <header className="news-header">
-        <h1 className="logo">新闻+博客</h1>
-        <div className="search-bar">
-          <form onSubmit={handleSearch}>
-            <input
-              type="text"
-              placeholder="Search News..."
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-            />
-            <button type="submit">
-              <i className="fa-solid fa-magnifying-glass"></i>
-            </button>
-          </form>
+return (
+  <div className="news">
+    {/* Header */}
+    <header className="news-header">
+      <h1 className="logo">News & Blogs</h1>
+      <div className="search-bar">
+        <form onSubmit={handleSearch}>
+          <input
+            type="text"
+            placeholder="Search news..."
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+          />
+          <button type="submit">
+            <i className="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </form>
+      </div>
+    </header>
+
+    <div className="news-content">
+      {/* Left Sidebar: Navbar */}
+      <div className="navbar">
+        <div className="user" onClick={onShowBlogs}>
+          <img src={userImg} alt="User" />
+          <p>My Blogs</p>
         </div>
-      </header>
-      <div className="news-content">
-        {/* 左侧导航栏：用户信息和分类 */}
-        <div className="navbar">
-          <div className="user" onClick={onShowBlogs}>
-            <img src={userImg} alt="User Image" />
-            <p>User blog</p>
-          </div>
-          <div className="categories">
-            <h1 className="nav-heading">Categories</h1>
-
-            <div className="nav-links">
-              {/* 渲染所有分类 */}
-              {categories.map((category) => (
-                <a
-                  href="#"
-                  key={category}
-                  className="nav-link"
-                  onClick={(e) => handleCategoryChange(e, category)}
-                >
-                  {category}
-                </a>
-              ))}
-
-              {/* 书签链接 */}
+        <div className="categories">
+          <h1 className="nav-heading">Categories</h1>
+          <div className="nav-links">
+            {categories.map((category) => (
               <a
                 href="#"
+                key={category}
                 className="nav-link"
-                onClick={() => setShowBookMarksModal(true)}
+                onClick={(e) => handleCategoryChange(e, category)}
               >
-                Bookmarks <i className="fa-solid fa-bookmark"></i>
+                {category}
+                <i className="bx bx-chevron-right" style={{fontSize: '16px', color: '#ccc'}}></i>
               </a>
-            </div>
+            ))}
+            <a
+              href="#"
+              className="nav-link"
+              onClick={() => setShowBookMarksModal(true)}
+            >
+              Bookmarks <i className="fa-solid fa-bookmark" style={{color: '#ffcc00'}}></i>
+            </a>
           </div>
         </div>
-        {/* 新闻内容区域 */}
-        <div className="news-section">
-          {/* 头条新闻 */}
-          {headline && (
+      </div>
+
+      {/* Center: News & Blogs List */}
+      <div className="news-section">
+        {/* Headline */}
+        {headline && (
+          <div className="headline" onClick={() => handleArticleClick(headline)}>
+            <img src={headline.image || noImg} alt={headline.title} />
+            <h2 className="headline-title">
+              {headline.title}
+              <i
+                className={`${
+                  bookMarks.some((b) => b.title === headline.title)
+                    ? "fa-solid"
+                    : "fa-regular"
+                } fa-bookmark bookmark`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleBookMarkClick(headline);
+                }}
+              ></i>
+            </h2>
+          </div>
+        )}
+
+        {/* News Grid */}
+        <div className="new-grid">
+          {news.map((article, index) => (
             <div
-              className="headline"
-              onClick={() => handleArticleClick(headline)}
+              key={index}
+              className="news-grid-item"
+              onClick={() => handleArticleClick(article)}
             >
-              <img src={headline.image || noImg} alt={headline.title} />
-              <h2 className="headline-title">
-                {headline.title}
-                {/* 书签图标，根据是否已收藏显示不同样式 */}
+              <img src={article.image || noImg} alt={article.title} />
+              <h3>
+                {article.title.slice(0, 60)}...
                 <i
                   className={`${
-                    bookMarks.some(
-                      (bookmark) => bookmark.title === headline.title
-                    )
+                    bookMarks.some((b) => b.title === article.title)
                       ? "fa-solid"
                       : "fa-regular"
                   } fa-bookmark bookmark`}
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleBookMarkClick(headline);
+                    handleBookMarkClick(article);
                   }}
                 ></i>
-              </h2>
+              </h3>
             </div>
-          )}
-          {/* 新闻网格 */}
-          <div className="new-grid">
-            {news.map((article, index) => (
-              <div
-                key={index}
-                className="news-grid-item"
-                onClick={() => handleArticleClick(article)}
-              >
-                <img src={article.image || noImg} alt={article.title} />
-                <h3>
-                  {article.title}
-                  {/* 书签图标 */}
-                  <i
-                    className={`${
-                      bookMarks.some(
-                        (bookmark) => bookmark.title === article.title
-                      )
-                        ? "fa-solid"
-                        : "fa-regular"
-                    } fa-bookmark bookmark`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleBookMarkClick(article);
-                    }}
-                  ></i>
-                </h3>
-              </div>
-            ))}
-          </div>
+          ))}
         </div>
-        {/* 新闻详情模态框 */}
-        <NewsModal
-          show={showModal}
-          article={selectedArticle}
-          onClose={() => setShowModal(false)}
-        />
-        {/* 书签模态框 */}
-        <BookMarks
-          show={showBookMarksModal}
-          bookMarks={bookMarks} // 传递 state 而非 localStorage
-          onClose={() => setShowBookMarksModal(false)}
-          onSelectedArticle={handleArticleClick}
-          onDeleteBookMark={onDeleteBookMark} // 使用新的 onDeleteBookMark
-        />
-        {/* 我的博客区域 */}
+
+        {/* My Blogs Section */}
         <div className="my-blogs">
-          <h1 className="my-blogs-heading">My Blogs</h1>
+          <h1 className="my-blogs-heading">My Latest Posts</h1>
           <div className="blog-posts">
-            {blogs.map((blog, index) => (
+            {blogs.map((blog) => (
               <div
-                key={blog._id} // 使用 MongoDB 的 _id 作为 key
+                key={blog._id}
                 className="blog-post"
                 onClick={() => handleBlogClick(blog)}
               >
                 <img src={blog.image || noImg} alt={blog.title} />
                 <h3>{blog.title}</h3>
-
-                {/* 编辑和删除按钮 */}
                 <div className="post-buttons">
                   <button
                     className="edit-post"
                     onClick={(e) => {
-                      e.stopPropagation(); // 阻止冒泡到父级，避免打开博客详情
+                      e.stopPropagation();
                       onEditBlog(blog);
                     }}
                   >
@@ -380,42 +355,54 @@ const News = ({ onShowBlogs, blogs, onEditBlog, onDeleteBlog }) => {
                   <button
                     className="delete-post"
                     onClick={(e) => {
-                      e.stopPropagation(); // 阻止冒泡
+                      e.stopPropagation();
                       onDeleteBlog(blog);
                     }}
                   >
-                    <i className="bx bxs-x-circle"></i>
+                    <i className="bx bxs-trash"></i>
                   </button>
                 </div>
               </div>
             ))}
           </div>
-          {/* 博客详情模态框 */}
-          {selectedPost && setShowBlogsModal && (
-            <BlogsModal
-              show={showBlogsModal}
-              blog={selectedPost}
-              onClose={closeBlogModal}
-            />
-          )}
-        </div>
-        {/* 天气和日历组件 */}
-        <div className="weather-calendar">
-          <Weather />
-          <Calendar />
         </div>
       </div>
-      {/* 页脚 */}
-      <footer className="news-footer">
-        <p>
-          <span>News & Blogs App</span>
-        </p>
-        <p>
-          &copy; {new Date().getFullYear()}. All Rights Reserved. By Hunter Lin
-        </p>
-      </footer>
+
+      {/* Right Sidebar: Weather & Calendar & Footer */}
+      <div className="weather-calendar">
+        <Weather />
+        <Calendar />
+        
+        {/* Footer Moved Here */}
+        <footer className="news-footer">
+          <p>&copy; {new Date().getFullYear()} News & Blogs App</p>
+          <p>Designed by Hunter Lin</p>
+        </footer>
+      </div>
     </div>
-  );
+
+    {/* Modals */}
+    <NewsModal
+      show={showModal}
+      article={selectedArticle}
+      onClose={() => setShowModal(false)}
+    />
+    <BookMarks
+      show={showBookMarksModal}
+      bookMarks={bookMarks}
+      onClose={() => setShowBookMarksModal(false)}
+      onSelectedArticle={handleArticleClick}
+      onDeleteBookMark={onDeleteBookMark}
+    />
+    {selectedPost && showBlogsModal && (
+      <BlogsModal
+        show={showBlogsModal}
+        blog={selectedPost}
+        onClose={closeBlogModal}
+      />
+    )}
+  </div>
+);
 };
 
 export default News;
