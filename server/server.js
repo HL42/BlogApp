@@ -9,7 +9,9 @@ const corsOptions = {
 
 const app = express();
 const PORT = 5001;
-const mongoURI = 'mongodb+srv://hunterlin:HL86254899%40l@demo.vfjby1c.mongodb.net/blogDB?appName=demo'
+require('dotenv').config();
+
+const mongoURI = process.env.MONGO_URI;
 
 // middleware
 app.use(cors(corsOptions)); // allows requests from other origins

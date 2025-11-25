@@ -7,10 +7,17 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Frontend build & deps
+news-blogs-app/node_modules
+news-blogs-app/dist
+news-blogs-app/dist-ssr
+
+# Backend deps
+server/node_modules
+
+# Environment files
+server/.env
+.env
 
 # Editor directories and files
 .vscode/*
