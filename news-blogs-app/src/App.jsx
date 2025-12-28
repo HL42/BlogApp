@@ -19,12 +19,12 @@ const App = () => {
   // 是否处于编辑模式
   const [isEditing, setIsEditing] = React.useState(false);
 
-
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5001/api";
   const fetchBlogs = async () => {
 
     try {
       console.log("Fetching blogs from server...");
-      const response = await axios.get("http://localhost:5001/api/blogs");
+      const response = await axios.get(`${API_BASE_URL}/api/blogs`);
       setBlogs(response.data);
 
     }
@@ -73,7 +73,7 @@ const App = () => {
 
     try {
       // 发送删除请求到服务器
-      await axios.delete(`http://localhost:5001/api/blogs/${blogId}`);
+      await axios.delete(`${API_BASE_URL}/api/blogs/${blogId}`);
 
       setBlogs((prevBlogs) => {
         // 过滤掉要删除的博客

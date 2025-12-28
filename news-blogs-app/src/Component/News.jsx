@@ -62,11 +62,13 @@ const News = ({ onShowBlogs, blogs, onEditBlog, onDeleteBlog }) => {
   const [selectedPost, setSelectedPost] = useState(null);
   // 控制博客详情模态框的显示
   const [showBlogsModal, setShowBlogsModal] = useState(false);
-  
+
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5001/api";
+
   // --- 新增函数：获取书签 (READ) ---
   const fetchBookmarks = async () => {
     try {
-        const response = await axios.get("http://localhost:5001/api/bookmarks");
+        const response = await axios.get(`${API_BASE_URL}/api/bookmarks`);
         setBookMarks(response.data);
     } catch (error) {
         console.error("Error fetching bookmarks:", error);
@@ -170,7 +172,7 @@ const News = ({ onShowBlogs, blogs, onEditBlog, onDeleteBlog }) => {
         if (isBookmarked) {
             // --- DELETE 逻辑：如果已收藏，则删除 ---
             const encodedTitle = encodeURIComponent(article.title);
-            await axios.delete(`http://localhost:5001/api/bookmarks/${encodedTitle}`);
+            await axios.delete(`${API_BASE_URL}/api/bookmarks/${encodedTitle}`);
             console.log("书签删除成功:", article.title);
 
         } else {
@@ -184,7 +186,7 @@ const News = ({ onShowBlogs, blogs, onEditBlog, onDeleteBlog }) => {
                 source: article.source, 
                 publishedAt: article.publishedAt,
             };
-            await axios.post("http://localhost:5001/api/bookmarks", bookmarkData);
+            await axios.post(`${API_BASE_URL}/api/bookmarks`, bookmarkData);
             console.log("书签添加成功:", article.title);
         }
 

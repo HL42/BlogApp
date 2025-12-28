@@ -19,6 +19,8 @@ export const Blogs = ({ onBack, editPost, isEditing }) => {
   const [contentValid, setContentValid] = useState(true);
   const [submissionError, setSubmissionError] = useState(null);
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5001/api";
+
   // 初始化数据
   useEffect(() => {
     if (isEditing && editPost) {
@@ -82,13 +84,13 @@ export const Blogs = ({ onBack, editPost, isEditing }) => {
       if (isEditing) {
         const blogId = editPost._id;
         const response = await axios.put(
-          `http://localhost:5001/api/blogs/${blogId}`,
+          `${API_BASE_URL}/api/blogs/${blogId}`,
           blogData
         );
         console.log("Blog post updated:", response.data);
       } else {
         const response = await axios.post(
-          "http://localhost:5001/api/blogs",
+          `${API_BASE_URL}/api/blogs`,
           blogData
         );
         console.log("Blog post created:", response.data);
