@@ -19,6 +19,8 @@
 
 A complete full-stack application engineered to combine **real-time news aggregation** with a robust, **cloud-persistent user blogging platform**. The project successfully migrated from local browser storage to a MERN stack architecture, demonstrating expertise in asynchronous data flow and RESTful API development.
 
+LIVELINK: https://blog-app-92jy.vercel.app/
+
 > 🎨 The design follows a clean, modern **Apple-inspired aesthetic**.
 
 ---
