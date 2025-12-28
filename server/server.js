@@ -1,15 +1,18 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+
+const app = express();
+const PORT = process.env.PORT || 5001
+require('dotenv').config();
+
 const corsOptions = {
-    origin: 'http://localhost:5173', // 允许来自此源的请求
-    credentials: true, // 允许发送cookie等凭据
+    origin: allowedOrigin,
+    Credential: true,
     optionSuccessStatus: 200
 }
 
-const app = express();
-const PORT = 5001;
-require('dotenv').config();
 
 const mongoURI = process.env.MONGO_URI;
 
@@ -106,7 +109,7 @@ app.put("/api/blogs/:id", async (req, res) => {
 // Change bookmark into full stack
 const bookmarkSchema = new mongoose.Schema({
 
-    title: { type: String, requried: true, unique: true },
+    title: { type: String, required: true, unique: true },
     url: { type: String, required: true },
     image: String,
     sourceName: String,
