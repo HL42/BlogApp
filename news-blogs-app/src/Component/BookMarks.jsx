@@ -4,7 +4,6 @@
  */
 import React from "react";
 import "./Modal.css";
-import demoImg from "../assets/images/demo.jpg";
 import "./BookMarks.css";
 import noImg from "../assets/images/no-img.png";
 
