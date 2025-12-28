@@ -7,6 +7,7 @@ const app = express();
 const PORT = process.env.PORT || 5001
 require('dotenv').config();
 
+const allowedOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
 const corsOptions = {
     origin: allowedOrigin,
     Credential: true,
